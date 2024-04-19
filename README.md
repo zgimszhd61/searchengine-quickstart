@@ -124,4 +124,96 @@ Citations:
 [20] https://www.sciencedirect.com/topics/computer-science/ranking-algorithm
 
 
+------
+
+在提供的简单搜索引擎排名算法代码中，存在几个可以优化的方面：
+
+1. **效率问题**：当前代码对每个文档进行全文扫描以计算关键词频率，这在文档数量或文档长度较大时效率较低。
+2. **扩展性问题**：代码中硬编码了文档和查询处理，不利于扩展至更大的数据集或实现更复杂的查询功能。
+3. **排名算法简单**：仅基于词频进行排名，没有考虑词的逆文档频率（IDF）或其他文本相关性指标，可能导致结果不够准确。
+
+### 优化后的版本
+
+以下是优化后的代码，引入了TF-IDF（词频-逆文档频率）作为权重计算方法，以提高搜索结果的相关性。同时，代码结构进行了调整，以提高可读性和可扩展性：
+
+```python
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import linear_kernel
+import numpy as np
+
+# 示例文档集合
+documents = [
+    "Python is a programming language that lets you work quickly",
+    "Python is an interpreted high-level general-purpose programming language",
+    "Python's simple syntax is especially suited for desktop, web, and business applications",
+    "Python allows programming in Object-Oriented and Procedural paradigms",
+    "Python programs generally are smaller than other programming languages",
+    "Python is a great language for beginners in programming",
+    "The Python programming language is a widely used tool for data analysis and machine learning",
+    "Python is a good choice for rapid development",
+    "Python has a design philosophy which emphasizes code readability",
+    "Python's syntax allows programmers to express concepts in fewer lines of code"
+]
+
+# 初始化TF-IDF向量化器
+vectorizer = TfidfVectorizer()
+
+# 构建文档的TF-IDF矩阵
+tfidf_matrix = vectorizer.fit_transform(documents)
+
+# 搜索引擎排名算法
+def search_engine_rank(query):
+    # 将查询转换成TF-IDF向量
+    query_tfidf = vectorizer.transform([query])
+    
+    # 计算查询向量与所有文档向量的余弦相似度
+    cosine_similarities = linear_kernel(query_tfidf, tfidf_matrix).flatten()
+    
+    # 获取相似度最高的前5个文档的索引
+    top_document_indices = np.argsort(cosine_similarities)[-5:][::-1]
+    
+    # 返回最相关的文档和它们的相似度分数
+    return [(i, cosine_similarities[i]) for i in top_document_indices]
+
+# 用户输入的查询关键词
+query = "Python programming language"
+
+# 调用搜索引擎排名算法
+top_docs = search_engine_rank(query)
+
+# 打印排名前5的文档及其相似度分数
+for doc_index, score in top_docs:
+    print(f"Doc {doc_index}: Score {score:.4f}")
+```
+
+### 优化说明
+
+1. **使用TF-IDF权重**：通过`TfidfVectorizer`计算文档的TF-IDF矩阵，这不仅考虑了词频（TF）还考虑了词的逆文档频率（IDF），有助于提升关键词在文档中的区分度。
+2. **使用余弦相似度**：通过`linear_kernel`计算查询向量与文档向量之间的余弦相似度，这是衡量文本相似性的常用方法。
+3. **代码结构优化**：将文档集合、向量化和搜索逻辑分开处理，提高了代码的可读性和可维护性。
+
+这种优化方式使得搜索引擎能更准确地评估查询与文档之间的相关性，从而提供更相关的搜索结果。
+
+Citations:
+[1] https://www.cnblogs.com/lucky-pin/p/7117182.html
+[2] https://blog.csdn.net/jclian91/article/details/77387842
+[3] https://aspiration.marketing/zh-cn/topics/seo
+[4] https://blog.aspiration.marketing/zh-cn/10-tips-for-improving-your-sites-seo
+[5] https://developer.aliyun.com/article/1421172
+[6] https://jiayi797.github.io/2017/07/09/%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E-%E7%AE%80%E5%8D%95%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E%E7%9A%84%E5%AE%9E%E7%8E%B0/
+[7] https://ahrefs.com/blog/zh/how-to-rank-higher-on-google/
+[8] https://www.ranktracker.com/zh/blog/7-tips-on-how-to-optimize-your-website-for-search-engine-rankings/
+[9] https://news.gandi.net/zh-hans/2022/06/how-do-you-improve-your-sites-natural-search-engine-ranking/
+[10] https://cloud.tencent.com/developer/article/2187626
+[11] https://blog.csdn.net/Acegem/article/details/103122466
+[12] https://www.growthhk.cn/quan/62918.html
+[13] https://www.jianshu.com/p/6b4d300991bd
+[14] https://cn.scientific-publishing.webshop.elsevier.com/manuscript-preparation-cn/problem-statement-research-how-to-write/
+[15] https://zixiren.com/article/297.html
+[16] https://blog.csdn.net/weixin_40574644/article/details/120627225
+[17] https://context.reverso.net/%E7%BF%BB%E8%AF%91/%E4%B8%AD%E6%96%87-%E8%8B%B1%E8%AF%AD/%E9%97%AE%E9%A2%98%E6%8F%8F%E8%BF%B0
+[18] https://www.zhihu.com/question/310148879
+[19] https://github.com/ryanhanwu/How-To-Ask-Questions-The-Smart-Way/blob/main/README-zh_CN.md
+[20] https://www.cloudflare.com/zh-cn/learning/performance/how-website-speed-boosts-seo/
+
 
