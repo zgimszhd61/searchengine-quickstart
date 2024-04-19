@@ -43,3 +43,85 @@ Citations:
 [18] https://worktile.com/kb/ask/33724.html
 [19] https://cloud.tencent.com/developer/article/1079150
 [20] https://baike.baidu.com/item/%E8%B0%B7%E6%AD%8C%E6%90%9C%E7%B4%A2%E5%BC%95%E6%93%8E/15224350?_swebfr=220011
+
+
+--------
+
+
+以下是一个简单的搜索引擎排名算法的Python实现，它可以在Google Colab或任何支持Python的环境中运行。这个例子使用了一个非常基础的排名方法，即计算关键词在文档中出现的频率，并根据这个频率对文档进行排名。
+
+```python
+import operator
+
+# 示例文档集合
+documents = {
+    "doc1": "Python is a programming language that lets you work quickly",
+    "doc2": "Python is an interpreted high-level general-purpose programming language",
+    "doc3": "Python's simple syntax is especially suited for desktop, web, and business applications",
+    "doc4": "Python allows programming in Object-Oriented and Procedural paradigms",
+    "doc5": "Python programs generally are smaller than other programming languages",
+    "doc6": "Python is a great language for beginners in programming",
+    "doc7": "The Python programming language is a widely used tool for data analysis and machine learning",
+    "doc8": "Python is a good choice for rapid development",
+    "doc9": "Python has a design philosophy which emphasizes code readability",
+    "doc10": "Python's syntax allows programmers to express concepts in fewer lines of code"
+}
+
+# 搜索引擎排名算法
+def search_engine_rank(query, documents):
+    # 初始化一个字典来存储每个文档的得分
+    scores = {doc: 0 for doc in documents}
+    
+    # 对于每个文档，计算关键词出现的频率
+    for doc, text in documents.items():
+        # 使用简单的分词方法，将文档文本按空格分割成单词
+        words = text.split()
+        # 计算每个关键词在文档中出现的次数，并累加到文档的得分上
+        for word in query.split():
+            scores[doc] += words.count(word)
+    
+    # 根据得分对文档进行排序，得分高的排在前面
+    sorted_docs = sorted(scores.items(), key=operator.itemgetter(1), reverse=True)
+    
+    # 返回得分最高的前5个文档
+    return sorted_docs[:5]
+
+# 用户输入的查询关键词
+query = "Python programming language"
+
+# 调用搜索引擎排名算法
+top_docs = search_engine_rank(query, documents)
+
+# 打印排名前5的文档
+for doc, score in top_docs:
+    print(f"{doc}: {score}")
+```
+
+在这个例子中，我们定义了一个`search_engine_rank`函数，它接受用户的查询关键词和一个文档集合作为输入。函数计算每个文档中关键词出现的频率，并根据这个频率对文档进行排名。最后，函数返回得分最高的前5个文档。
+
+请注意，这个排名算法非常基础，它没有考虑诸如词项的逆文档频率（IDF）、文档长度归一化或其他更复杂的排名因素。在实际的搜索引擎中，排名算法会更加复杂，以便更准确地反映文档的相关性。
+
+Citations:
+[1] https://www.stratascratch.com/blog/ranking-in-python-and-sql/
+[2] https://towardsdatascience.com/how-to-implement-learning-to-rank-model-using-python-569cd9c49b08
+[3] https://vitalflux.com/ranking-algorithms-types-concepts-examples/
+[4] https://safjan.com/implementing-rank-fusion-in-python/
+[5] https://towardsdatascience.com/introduction-to-ranking-algorithms-4e4639d65b8
+[6] https://en.wikipedia.org/wiki/PageRank
+[7] https://www.semrush.com/blog/google-search-algorithm/
+[8] https://www.searchenginejournal.com/build-search-ranking-algorithm-machine-learning/297047/
+[9] https://www.searchenginejournal.com/ranking-factors/top-ranking-factors/
+[10] https://towardsdatascience.com/pagerank-3c568a7d2332
+[11] https://www.linkedin.com/pulse/search-engine-algorithm-example-erudience-it-agency
+[12] https://www.youtube.com/watch?v=gA3nDd_6QJM
+[13] https://github.com/Nishanksingla/Implementing-Search-Engine-and-Page-Rank-Algorithm
+[14] https://jkchu.com/2016/02/17/designing-and-implementing-a-ranking-algorithm/
+[15] https://www.algolia.com/blog/product/search-ranking-algorithm-unveiled/
+[16] https://pub.aimind.so/understanding-the-bm25-ranking-algorithm-19f6d45c6ce
+[17] https://github.com/ishikasaxena/page-rank
+[18] https://www.geeksforgeeks.org/page-rank-algorithm-implementation/
+[19] https://www.linkedin.com/advice/0/how-can-you-use-python-implement-pagerank-algorithm-0juef
+[20] https://www.sciencedirect.com/topics/computer-science/ranking-algorithm
+
+
+
